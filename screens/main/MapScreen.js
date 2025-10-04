@@ -394,32 +394,12 @@ const MapScreen = ({ navigation }) => {
         {cafes.map((cafe) => (
           <Marker
             key={cafe.id}
-            coordinate={{
-              latitude: cafe.latitude,
-              longitude: cafe.longitude,
-            }}
+            coordinate={{ latitude: cafe.latitude, longitude: cafe.longitude }}
             onPress={() => {
-              setSelectedCafe(cafe);
-              setShowSelectedCafeCard(true);
+              navigation.navigate('CafeDetail', { cafe });
             }}
           >
-            <View
-              style={{
-                alignItems: "center",
-                zIndex: selectedCafe?.id === cafe.id ? 1000 : 1,
-              }}
-            >
-              {selectedCafe?.id === cafe.id && (
-                <View style={styles.markerLabelContainer}>
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={styles.markerLabelText}
-                  >
-                    {cafe.name}
-                  </Text>
-                </View>
-              )}
+            <View style={{ alignItems: 'center' }}>
               <View style={styles.markerContainer}>
                 <Ionicons name="cafe" size={24} color={colors.accentGreen} />
               </View>
