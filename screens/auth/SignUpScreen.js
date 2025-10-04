@@ -8,29 +8,29 @@ import colors from '../../constants/colors';
 import theme from '../../constants/theme';
 
 const SignUpScreen = ({ navigation }) => {
-  const { signInWithEmail, user } = useAuth();
+  const { signUp, user } = useAuth();
   const [email, setEmail] = useState('');
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSendLink = async () => {
-    if (!email || sending) return;
+  const handleSignUp = async () => {
+    if (!email || !password || password !== confirmPassword || submitting) return;
     try {
       setError(null);
-      setSending(true);
-      await signInWithEmail(email.trim().toLowerCase());
-      setSent(true);
+      setSubmitting(true);
+  await signUp(email, password, { display_name: displayName });
+  // Let AppNavigator switch stacks automatically when user becomes authenticated.
     } catch (e) {
-      setError(e.message || 'Failed to send link');
+      setError(e.message || 'Signup failed');
     } finally {
-      setSending(false);
+      setSubmitting(false);
     }
   };
 
-  if (user) {
-    navigation.reset({ index: 0, routes: [{ name: 'Map' }] });
-  }
+  // Authenticated UI switch handled by AppNavigator; no manual navigation needed.
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,43 +48,42 @@ const SignUpScreen = ({ navigation }) => {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            autoCapitalize="none"
           />
-          
-          {sent ? (
-            <Text style={{ color: colors.accentGreen, marginBottom: theme.spacing.md }}>
-              Magic link sent. Check your email to finish signup.
-            </Text>
-          ) : (
-            <Button
-              title={sending ? 'Sending...' : 'Send Magic Link'}
-              onPress={handleSendLink}
-              variant="primary"
-              style={styles.signUpButton}
-              disabled={!email || sending}
-            />
-          )}
+          <TextInput
+            label="Display Name"
+            placeholder="Display name"
+            value={displayName}
+            onChangeText={setDisplayName}
+          />
+          <TextInput
+            label="Password"
+            placeholder="Create a password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+          />
+            <TextInput
+            label="Confirm Password"
+            placeholder="Repeat password"
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry
+            autoCapitalize="none"
+          />
+          <Button
+            title={submitting ? 'Creating...' : 'Create Account'}
+            onPress={handleSignUp}
+            variant="primary"
+            style={styles.signUpButton}
+            disabled={!email || !password || password !== confirmPassword || submitting}
+          />
           {error && (
             <Text style={{ color: colors.error || '#ff5555', marginBottom: theme.spacing.md }}>{error}</Text>
           )}
 
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          <Button
-            title="Continue with Google"
-            onPress={() => {}}
-            variant="secondary"
-            style={styles.socialButton}
-          />
-
-          <Button
-            title="Continue with Apple"
-            onPress={() => {}}
-            variant="secondary"
-          />
+          {/* Additional social auth buttons could be added here later */}
 
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={styles.loginText}>

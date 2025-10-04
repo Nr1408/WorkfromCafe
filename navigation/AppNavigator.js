@@ -6,6 +6,7 @@ import CafeDetailScreen from '../screens/main/CafeDetailScreen';
 import CheckInFormScreen from '../screens/main/CheckInFormScreen';
 import AuthNavigator from './AuthNavigator';
 import { useAuth } from '../auth/AuthProvider';
+import CommunityScreen from '../screens/main/CommunityScreen';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ const AppNavigator = () => {
       {isAuthed && (
         <>
           <Stack.Screen name="Map" component={MapScreen} />
+          <Stack.Screen name="Community" component={CommunityScreen} />
           <Stack.Screen name="CafeDetail" component={CafeDetailScreen} />
           <Stack.Screen name="CheckInForm" component={CheckInFormScreen} />
         </>

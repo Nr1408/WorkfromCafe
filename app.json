@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
-  "newArchEnabled": false,
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -38,7 +38,9 @@
     },
     "extra": {
       "SUPABASE_URL": "https://krmxfisaqdknopfzfjuc.supabase.co",
-      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybXhmaXNhcWRrbm9wZnpmanVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NTIxNTEsImV4cCI6MjA3NTEyODE1MX0.ZVY4PymQODoAVCe3CNtnCdpaFlYtTIY-vrCFLZ4uwYA"
+      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybXhmaXNhcWRrbm9wZnpmanVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NTIxNTEsImV4cCI6MjA3NTEyODE1MX0.ZVY4PymQODoAVCe3CNtnCdpaFlYtTIY-vrCFLZ4uwYA",
+      "googlePlacesApiKey": "AIzaSyCKQcxErzyKkzgBU_vZf6GgszcKtwsC-R0",
+      "placesProxyUrl": ""
     },
     "plugins": [
       "expo-font"

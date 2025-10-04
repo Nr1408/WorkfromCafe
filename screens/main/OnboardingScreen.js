@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/common/Button';
 import { useAuth } from '../../auth/AuthProvider';
@@ -19,12 +19,16 @@ const OnboardingScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.graphicContainer}>
-          <Ionicons name="map" size={120} color={colors.accentGreen} />
+          <Image
+            source={require('../../assets/onboarding-hero.png')}
+            style={styles.heroImage}
+            resizeMode="cover"
+          />
           <Text style={styles.graphicText}>Live, User-Verified Data for Remote Workers</Text>
         </View>
 
         <Button
-          title={user ? 'OPEN MAP' : 'GET STARTED'}
+          title={user ? 'OPEN MAP' : '📍 Find Cafes Near Me'}
           onPress={() => {
             if (user) {
               navigation.navigate('Map');
@@ -36,27 +40,14 @@ const OnboardingScreen = ({ navigation }) => {
           style={styles.launchButton}
         />
 
-        <View style={styles.featuresContainer}>
-          <Card style={styles.featureCard}>
-            <Ionicons name="map-outline" size={24} color={colors.accentGreen} />
-            <Text style={styles.featureTitle}>Interactive Map</Text>
-            <Text style={styles.featureDescription}>Real-time cafe locations</Text>
-          </Card>
-
-          <Card style={styles.featureCard}>
-            <Ionicons name="speedometer-outline" size={24} color={colors.accentGreen} />
-            <Text style={styles.featureTitle}>Verified Speed</Text>
-            <Text style={styles.featureDescription}>Live Wi-Fi metrics</Text>
-          </Card>
-
-          <Card style={styles.featureCard}>
-            <Ionicons name="people-outline" size={24} color={colors.accentGreen} />
-            <Text style={styles.featureTitle}>Community Powered</Text>
-            <Text style={styles.featureDescription}>User-shared insights</Text>
+        <View style={styles.singleFeatureWrapper}>
+          <Card style={styles.singleFeatureCard}>
+            <Ionicons name="people-outline" size={28} color={colors.accentGreen} />
+            <Text style={styles.singleFeatureTitle}>Community Powered</Text>
+            <Text style={styles.singleFeatureDescription}>User-shared insights that keep data fresh & trustworthy.</Text>
           </Card>
         </View>
 
-        <Text style={styles.footer}>Seamlessly powered by Next.js & Supabase</Text>
       </View>
     </SafeAreaView>
   );
@@ -92,6 +83,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: theme.spacing.xl,
   },
+  heroImage: {
+    width: '100%',
+    height: 180,
+    borderRadius: theme.borderRadius.large || 24,
+  },
   graphicText: {
     fontSize: theme.fontSizes.medium,
     color: colors.secondaryText,
@@ -101,28 +97,28 @@ const styles = StyleSheet.create({
   launchButton: {
     marginVertical: theme.spacing.lg,
   },
-  featuresContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  singleFeatureWrapper: {
+    marginTop: theme.spacing.md,
   },
-  featureCard: {
-    flex: 1,
-    marginHorizontal: theme.spacing.xs,
+  singleFeatureCard: {
+    width: '100%',
     alignItems: 'center',
-    padding: theme.spacing.sm,
+    paddingVertical: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.md,
   },
-  featureTitle: {
-    fontSize: theme.fontSizes.small,
+  singleFeatureTitle: {
+    fontSize: theme.fontSizes.medium,
     fontWeight: '600',
     color: colors.primaryText,
     marginTop: theme.spacing.sm,
     textAlign: 'center',
   },
-  featureDescription: {
+  singleFeatureDescription: {
     fontSize: theme.fontSizes.small,
     color: colors.secondaryText,
     marginTop: theme.spacing.xs,
     textAlign: 'center',
+    paddingHorizontal: theme.spacing.md,
   },
   footer: {
     fontSize: theme.fontSizes.small,

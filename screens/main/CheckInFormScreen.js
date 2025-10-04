@@ -36,7 +36,7 @@ const SegmentedControl = ({ options, selected, onSelect, label }) => (
 );
 
 const CheckInFormScreen = ({ route, navigation }) => {
-  const { cafe } = route.params;
+  const { cafe, onCheckInSuccess } = route.params;
   const [crowdLevel, setCrowdLevel] = useState('');
   const [powerOutlets, setPowerOutlets] = useState('');
   const [noiseLevel, setNoiseLevel] = useState('');
@@ -52,12 +52,22 @@ const CheckInFormScreen = ({ route, navigation }) => {
       setSubmitError(null);
       setSubmitting(true);
       await submitCheckIn({
-        cafeId: Number(cafe.id),
+        placeId: cafe.id, // Google Places id
         crowdLevel,
         wifiSpeed: Number(wifiSpeed),
         powerOutlets,
         noiseLevel,
       });
+      if (onCheckInSuccess) {
+        onCheckInSuccess({
+          place_id: cafe.id,
+          crowd_level: crowdLevel,
+          wifi_speed: Number(wifiSpeed),
+          power_outlets: powerOutlets,
+          noise_level: noiseLevel,
+          created_at: new Date().toISOString(),
+        });
+      }
       navigation.goBack();
     } catch (e) {
       setSubmitError(e.message || 'Failed to submit');

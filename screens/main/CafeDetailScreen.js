@@ -5,18 +5,10 @@ import MetricBadge from '../../components/MetricBadge';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import colors from '../../constants/colors';
-import { useLiveCheckIns } from '../../hooks/useLiveCheckIns';
 import theme from '../../constants/theme';
 
 const CafeDetailScreen = ({ route, navigation }) => {
   const { cafe } = route.params;
-  const { rows: liveRows } = useLiveCheckIns(Number(cafe.id), 1);
-  const latest = liveRows && liveRows.length ? liveRows[0] : null;
-  const crowd = latest?.crowd_level || cafe.current_crowd_level;
-  const wifi = latest?.wifi_speed != null ? latest.wifi_speed : cafe.current_wifi_speed_mbps;
-  const power = latest?.power_outlets || cafe.current_power_outlets_rating;
-  const noise = latest?.noise_level || cafe.current_noise_level_rating;
-  const lastUpdated = latest ? 'Just now' : cafe.last_live_update_at;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,26 +31,26 @@ const CafeDetailScreen = ({ route, navigation }) => {
 
         <View style={styles.content}>
           <Text style={styles.sectionTitle}>Live Productivity Metrics</Text>
-          <Text style={styles.lastUpdated}>Last Updated: {lastUpdated}</Text>
+          <Text style={styles.lastUpdated}>Last Updated: {cafe.last_live_update_at}</Text>
 
           <View style={styles.metricsContainer}>
             <MetricBadge
               icon="wifi"
               label="Wi-Fi Speed"
-              value={`${wifi} Mbps`}
-              rating={wifi >= 50 ? 'Excellent' : wifi >= 25 ? 'Good' : 'Fair'}
+              value={`${cafe.current_wifi_speed_mbps} Mbps`}
+              rating={cafe.current_wifi_speed_mbps >= 50 ? 'Excellent' : cafe.current_wifi_speed_mbps >= 25 ? 'Good' : 'Fair'}
             />
             <MetricBadge
               icon="flash"
               label="Power Outlets"
-              value={power}
-              rating={power}
+              value={cafe.current_power_outlets_rating}
+              rating={cafe.current_power_outlets_rating}
             />
             <MetricBadge
               icon="volume-medium"
               label="Noise Level"
-              value={noise}
-              rating={noise}
+              value={cafe.current_noise_level_rating}
+              rating={cafe.current_noise_level_rating}
             />
           </View>
 
@@ -66,8 +58,8 @@ const CafeDetailScreen = ({ route, navigation }) => {
             <MetricBadge
               icon="people"
               label="Crowd Level"
-              value={crowd}
-              rating={crowd}
+              value={cafe.current_crowd_level}
+              rating={cafe.current_crowd_level}
             />
           </View>
 

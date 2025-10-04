@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
-export function useLiveCheckIns(cafeId, limit = 50) {
+// Accept an object param for clarity moving forward
+export function useLiveCheckIns({ placeId, cafeId, limit = 50 }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,7 +19,7 @@ export function useLiveCheckIns(cafeId, limit = 50) {
           .select('*')
           .order('created_at', { ascending: false })
           .limit(limit);
-        if (cafeId) query = query.eq('cafe_id', cafeId);
+        if (placeId) query = query.eq('place_id', placeId); else if (cafeId) query = query.eq('cafe_id', cafeId);
         const { data, error } = await query;
         if (error) throw error;
         if (isMounted) setRows(data || []);
@@ -31,6 +32,12 @@ export function useLiveCheckIns(cafeId, limit = 50) {
 
     loadInitial();
 
+    const filter = placeId
+      ? `place_id=eq.${placeId}`
+      : cafeId
+      ? `cafe_id=eq.${cafeId}`
+      : undefined;
+
     const channel = supabase
       .channel('check_ins-stream')
       .on(
@@ -39,10 +46,17 @@ export function useLiveCheckIns(cafeId, limit = 50) {
           event: 'INSERT',
           schema: 'public',
           table: 'check_ins',
-          filter: cafeId ? `cafe_id=eq.${cafeId}` : undefined,
+          filter,
         },
         payload => {
-          setRows(prev => [payload.new, ...prev].slice(0, limit));
+          // If we didn't filter (no placeId & no cafeId), accept all; else ensure match
+          if (
+            !filter ||
+            (placeId && payload.new.place_id === placeId) ||
+            (cafeId && payload.new.cafe_id === cafeId)
+          ) {
+            setRows(prev => [payload.new, ...prev].slice(0, limit));
+          }
         }
       )
       .subscribe();
@@ -51,7 +65,7 @@ export function useLiveCheckIns(cafeId, limit = 50) {
       isMounted = false;
       supabase.removeChannel(channel);
     };
-  }, [cafeId, limit]);
+  }, [placeId, cafeId, limit]);
 
   return { rows, loading, error };
 }

@@ -8,30 +8,27 @@ import colors from '../../constants/colors';
 import theme from '../../constants/theme';
 
 const LoginScreen = ({ navigation }) => {
-  const { signInWithEmail, user } = useAuth();
+  const { signIn, user } = useAuth();
   const [email, setEmail] = useState('');
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState('');
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleSendLink = async () => {
-    if (!email || sending) return;
+  const handleLogin = async () => {
+    if (!email || !password || loadingSubmit) return;
     try {
       setError(null);
-      setSending(true);
-      await signInWithEmail(email.trim().toLowerCase());
-      setSent(true);
+      setLoadingSubmit(true);
+  await signIn(email, password);
+  // Do not manually reset; AppNavigator will re-render with Map once session/user updates.
     } catch (e) {
-      setError(e.message || 'Failed to send link');
+      setError(e.message || 'Login failed');
     } finally {
-      setSending(false);
+      setLoadingSubmit(false);
     }
   };
 
-  if (user) {
-    // If already logged in (magic link returned), go to Map
-    navigation.reset({ index: 0, routes: [{ name: 'Map' }] });
-  }
+  // When user becomes authenticated, AppNavigator will swap stacks automatically; no manual reset here.
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,43 +45,31 @@ const LoginScreen = ({ navigation }) => {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            autoCapitalize="none"
           />
-          
-          {sent ? (
-            <Text style={{ color: colors.accentGreen, marginBottom: theme.spacing.md }}>
-              Magic link sent. Check your email.
-            </Text>
-          ) : (
-            <Button
-              title={sending ? 'Sending...' : 'Send Magic Link'}
-              onPress={handleSendLink}
-              variant="primary"
-              style={styles.loginButton}
-              disabled={!email || sending}
-            />
-          )}
+          <TextInput
+            label="Password"
+            placeholder="Enter your password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+          />
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text style={styles.forgotPassword}>Forgot password?</Text>
+          </TouchableOpacity>
+          <Button
+            title={loadingSubmit ? 'Logging in...' : 'Log In'}
+            onPress={handleLogin}
+            variant="primary"
+            style={styles.loginButton}
+            disabled={!email || !password || loadingSubmit}
+          />
           {error && (
             <Text style={{ color: colors.error || '#ff5555', marginBottom: theme.spacing.md }}>{error}</Text>
           )}
 
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR</Text>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Placeholder social buttons retained (non-functional) */}
-          <Button
-            title="Continue with Google"
-            onPress={() => {}}
-            variant="secondary"
-            style={styles.socialButton}
-          />
-          <Button
-            title="Continue with Apple"
-            onPress={() => {}}
-            variant="secondary"
-          />
+          {/* Additional actions could go here (forgot password, socials) */}
 
           <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
             <Text style={styles.signUpText}>
