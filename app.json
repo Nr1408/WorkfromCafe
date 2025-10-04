@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "WorkFromCafe",
+    "slug": "workfromcafe-ui",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+  "newArchEnabled": false,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#121212"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyDW3PK263uMcGH2Lhr9SU2Gmekf9sYaDkY"
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We use your location to show nearby cafes and center the map on your position."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#121212"
+      },
+      "edgeToEdgeEnabled": true,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDW3PK263uMcGH2Lhr9SU2Gmekf9sYaDkY"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "SUPABASE_URL": "https://krmxfisaqdknopfzfjuc.supabase.co",
+      "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtybXhmaXNhcWRrbm9wZnpmanVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NTIxNTEsImV4cCI6MjA3NTEyODE1MX0.ZVY4PymQODoAVCe3CNtnCdpaFlYtTIY-vrCFLZ4uwYA"
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
