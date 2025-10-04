@@ -149,9 +149,10 @@ const MapScreen = ({ navigation }) => {
   };
 
   const toRad = (value) => (value * Math.PI) / 180;
-  const haversineMiles = (coord1, coord2) => {
+  // Haversine distance in kilometers
+  const haversineKm = (coord1, coord2) => {
     if (!coord1 || !coord2) return null;
-    const R = 3958.8; // Earth radius in miles
+    const R = 6371; // Earth radius in km
     const dLat = toRad(coord2.latitude - coord1.latitude);
     const dLon = toRad(coord2.longitude - coord1.longitude);
     const lat1 = toRad(coord1.latitude);
@@ -160,17 +161,18 @@ const MapScreen = ({ navigation }) => {
       Math.sin(dLat / 2) ** 2 +
       Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    return R * c; // kilometers
   };
 
-  const formatDistance = (miles) => {
-    if (miles == null) return "";
-    if (miles < 1) {
-      const meters = miles * 1609.34;
+  const formatDistance = (km) => {
+    if (km == null) return "";
+    if (km < 1) {
+      const meters = km * 1000;
       if (meters < 100) return `${Math.round(meters)}m`;
       return `${Math.round(meters / 50) * 50}m`;
     }
-    return `${miles.toFixed(1)} miles`;
+    // Show one decimal if < 10km, else whole number
+    return km < 10 ? `${km.toFixed(1)} km` : `${Math.round(km)} km`;
   };
 
   const openDirections = (lat, lng, name) => {
@@ -463,13 +465,13 @@ const MapScreen = ({ navigation }) => {
               <Text style={styles.emptyText}>No cafes found nearby.</Text>
             ) : (
               cafes.map((cafe) => {
-                const distanceMi = currentLocation
-                  ? haversineMiles(currentLocation, {
+                const distanceKm = currentLocation
+                  ? haversineKm(currentLocation, {
                       latitude: cafe.latitude,
                       longitude: cafe.longitude,
                     })
                   : null;
-                const distanceText = formatDistance(distanceMi);
+                const distanceText = formatDistance(distanceKm);
                 return (
                   <CafeListItem
                     key={cafe.id}
@@ -502,7 +504,7 @@ const MapScreen = ({ navigation }) => {
               cafe={selectedCafe}
               distanceText={formatDistance(
                 currentLocation
-                  ? haversineMiles(currentLocation, {
+                  ? haversineKm(currentLocation, {
                       latitude: selectedCafe.latitude,
                       longitude: selectedCafe.longitude,
                     })
