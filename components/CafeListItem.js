@@ -47,69 +47,35 @@ const CafeListItem = ({ cafe, onPress, distanceText, onDirections }) => {
     return colors.secondaryText;
   };
 
+  // Truncate long addresses so the directions button has room and is fully visible
+  const rawAddress = cafe.address || '';
+  const displayAddress = rawAddress.length > 42 ? rawAddress.slice(0, 39) + '…' : rawAddress;
+
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
+    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.header}>
         <Text style={styles.name}>{cafe.name}</Text>
-        <Text style={styles.updateTime}>
-          {distanceText || cafe.last_live_update_at}
-        </Text>
+        <Text style={styles.updateTime}>{distanceText || cafe.last_live_update_at}</Text>
       </View>
 
       <View style={styles.metricsRow}>
         <View style={styles.metric}>
-          <Ionicons
-            name="wifi"
-            size={16}
-            color={getMetricColor(cafe.current_wifi_speed_mbps, "wifi")}
-          />
-          <Text
-            style={[
-              styles.metricText,
-              { color: getMetricColor(cafe.current_wifi_speed_mbps, "wifi") },
-            ]}
-          >
-            {cafe.current_wifi_speed_mbps != null
-              ? `Wi‑Fi: ${cafe.current_wifi_speed_mbps} Mbps`
-              : "Wi‑Fi: Unknown"}
+          <Ionicons name="wifi" size={16} color={getMetricColor(cafe.current_wifi_speed_mbps, 'wifi')} />
+          <Text style={[styles.metricText, { color: getMetricColor(cafe.current_wifi_speed_mbps, 'wifi') }]}>
+            {cafe.current_wifi_speed_mbps != null ? `Wi‑Fi: ${cafe.current_wifi_speed_mbps} Mbps` : 'Wi‑Fi: Unknown'}
           </Text>
         </View>
-
         <View style={styles.metric}>
-          <Ionicons
-            name="people"
-            size={16}
-            color={getMetricColor(cafe.current_crowd_level, "crowd")}
-          />
-          <Text
-            style={[
-              styles.metricText,
-              { color: getMetricColor(cafe.current_crowd_level, "crowd") },
-            ]}
-          >
-            {cafe.current_crowd_level || "Crowd: Unknown"}
+          <Ionicons name="people" size={16} color={getMetricColor(cafe.current_crowd_level, 'crowd')} />
+          <Text style={[styles.metricText, { color: getMetricColor(cafe.current_crowd_level, 'crowd') }]}>
+            {cafe.current_crowd_level || 'Crowd: Unknown'}
           </Text>
         </View>
       </View>
 
       <View style={styles.footerRow}>
-        <View style={styles.addressRow}>
-          <Ionicons
-            name="location-outline"
-            size={14}
-            color={colors.secondaryText}
-          />
-          <Text style={styles.address} numberOfLines={1}>
-            {cafe.address}
-          </Text>
-        </View>
-        <Animated.View
-          style={[styles.directionsAnimated, { width: animWidth }]}
-        >
+        {/* Directions button on LEFT */}
+        <Animated.View style={[styles.directionsAnimated, { width: animWidth }]}>        
           <TouchableOpacity
             style={styles.directionsButton}
             onPress={onDirections}
@@ -117,11 +83,7 @@ const CafeListItem = ({ cafe, onPress, distanceText, onDirections }) => {
             onPressOut={collapse}
             activeOpacity={0.85}
           >
-            <Ionicons
-              name="navigate"
-              size={16}
-              color={colors.primaryBackground}
-            />
+            <Ionicons name="navigate" size={16} color={colors.primaryBackground} />
             <Animated.Text
               numberOfLines={1}
               style={[
@@ -138,6 +100,10 @@ const CafeListItem = ({ cafe, onPress, distanceText, onDirections }) => {
             </Animated.Text>
           </TouchableOpacity>
         </Animated.View>
+        <View style={styles.addressRow}>
+            <Ionicons name="location-outline" size={14} color={colors.secondaryText} />
+            <Text style={styles.address} numberOfLines={1}>{displayAddress}</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -193,13 +159,15 @@ const styles = StyleSheet.create({
   footerRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
+    gap: theme.spacing.sm,
   },
   directionsAnimated: {
     overflow: "hidden",
     height: 32,
     borderRadius: 8,
     backgroundColor: colors.accentGreen,
+    marginRight: theme.spacing.sm,
   },
   directionsButton: {
     flex: 1,

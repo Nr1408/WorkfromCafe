@@ -35,7 +35,7 @@ const LoginScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
           <Ionicons name="cafe" size={50} color={colors.accentGreen} />
-          <Text style={styles.title}>Log in</Text>
+          <Text style={styles.title}>Login</Text>
         </View>
 
         <View style={styles.form}>
@@ -59,7 +59,7 @@ const LoginScreen = ({ navigation }) => {
             <Text style={styles.forgotPassword}>Forgot password?</Text>
           </TouchableOpacity>
           <Button
-            title={loadingSubmit ? 'Logging in...' : 'Log In'}
+            title={loadingSubmit ? 'Logging in...' : 'LogIn'}
             onPress={handleLogin}
             variant="primary"
             style={styles.loginButton}

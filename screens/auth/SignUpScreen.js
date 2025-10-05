@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/common/Button';
 import TextInput from '../../components/common/TextInput';
@@ -22,7 +22,10 @@ const SignUpScreen = ({ navigation }) => {
       setError(null);
       setSubmitting(true);
   await signUp(email, password, { display_name: displayName });
-  // Let AppNavigator switch stacks automatically when user becomes authenticated.
+  // After successful signup, prompt user to log in explicitly
+  Alert.alert('Account Created', 'Please Login', [
+    { text: 'OK', onPress: () => navigation.navigate('Login') }
+  ]);
     } catch (e) {
       setError(e.message || 'Signup failed');
     } finally {
@@ -87,7 +90,7 @@ const SignUpScreen = ({ navigation }) => {
 
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={styles.loginText}>
-              Already have an account? <Text style={styles.loginLink}>Log In</Text>
+              Already have an account? <Text style={styles.loginLink}>LogIn</Text>
             </Text>
           </TouchableOpacity>
         </View>

@@ -17,7 +17,7 @@ import {
 } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { Ionicons } from "@expo/vector-icons";
-import { fetchNearbyCafes, fetchPlaceSuggestions } from "../../services/places";
+import { fetchNearbyCafes, fetchPlaceSuggestions, fetchPlaceDetails } from "../../services/places";
 import CafeListItem from "../../components/CafeListItem";
 import colors from "../../constants/colors";
 import theme from "../../constants/theme";
@@ -26,9 +26,7 @@ import { useAuth } from "../../auth/AuthProvider";
 
 const { height } = Dimensions.get("window");
 
-// !!! IMPORTANT: Replace with your actual Google Places API Key !!!
-// For production, consider storing this securely (e.g., react-native-dotenv)
-const GOOGLE_PLACES_API_KEY = "AIzaSyCKQcxErzyKkzgBU_vZf6GgszcKtwsC-R0"; // <<< REPLACE THIS!
+// Google Places API key now sourced via expo extra env (see services/places.js) – do not hardcode here.
 
 const darkMapStyle = [
   { elementType: "geometry", stylers: [{ color: "#212121" }] },
@@ -319,11 +317,35 @@ const MapScreen = ({ navigation }) => {
   };
 
   const selectSuggestion = async (s) => {
-    setQuery(s.primary || s.description);
-    setShowSuggestions(false);
-    // We only have id/placeId. We'll try to use Places Nearby refresh centered around current location for now.
-    // Optionally could call details API here for exact lat/lng (future improvement).
-    // For now just hide suggestions.
+    try {
+      setQuery(s.primary || s.description);
+      setShowSuggestions(false);
+      // Fetch precise details
+      const details = await fetchPlaceDetails(s.placeId || s.id);
+      if (details?.latitude && details?.longitude) {
+        const cafeObj = {
+          id: s.placeId || s.id,
+            name: details.name || s.primary || s.description,
+          latitude: details.latitude,
+          longitude: details.longitude,
+          address: details.address || s.description || 'Address unavailable',
+          current_crowd_level: 'Unknown',
+          current_wifi_speed_mbps: null,
+          last_live_update_at: 'Live',
+        };
+        // Center map
+        mapRef.current?.animateToRegion({
+          latitude: details.latitude,
+          longitude: details.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        }, 600);
+        // Navigate directly
+        navigation.navigate('CafeDetail', { cafe: cafeObj });
+      }
+    } catch (e) {
+      console.warn('selectSuggestion failed', e.message);
+    }
   };
 
   return (
